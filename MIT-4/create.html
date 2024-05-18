@@ -41,6 +41,7 @@
             padding: 0px 20px;
             margin-left: 50px;
             width: 80%;
+            /* display: none; */
         }
         .bottom button{
 
@@ -75,7 +76,7 @@
         </div>
     </div>
 
-    <div class="bottom">
+    <!-- <div class="bottom">
         <div>
             <h4 >Name : <span id="name_input"></span></h4>
             <p >Email : <span id="email_input"></span></p>
@@ -85,7 +86,10 @@
             <button onclick="del()">Delete</button>
         </div>
 
-    </div>
+    </div> -->
+
+    <div id="contact_list"></div>
+
 </body>
 <script>
 
@@ -119,18 +123,44 @@
             alert('value entered successfully');
             localStorage.setItem('User_data', JSON.stringify(User_data));
 
-            N_view.innerHTML = name;
-            E_view.innerHTML = email;
+            displayContacts();
         }
     }
+
+    function displayContacts(){
+        var User_data = JSON.parse(localStorage.getItem('User_data')) || [];
+        var contactList = document.getElementById('contact_list');
+        contactList.innerHTML = '';
+
+        User_data.forEach(function(user , index){
+            var contactdiv = document.createElement('div');
+            contactdiv.className = 'bottom';
+            contactdiv.innerHTML = `
+                <div>
+                    <h4>Name: <span>${user.username}</span></h4>
+                    <p>Email: <span>${user.Email}</span></p>
+                </div>
+                <div>
+                    <button onclick="del(${index})">Delete</button>
+                </div>
+            `;
+            contactList.appendChild(contactdiv);
+
+        });
+    }
     
-    function del(){
+    function del(index){
         var User_data = JSON.parse(localStorage.getItem('User_data')) || [];
         if (confirm('Are you sure you want to delete this task?')) {
         User_data.splice(index, 1);
-        localStorage.setItem('User_data', JSON.stringify(User_data));   
+        localStorage.setItem('User_data', JSON.stringify(User_data)); 
+        displayContacts();  
 
     }
 }
+
+    window.onload = function(){
+        displayContacts();
+    }
 </script>
 </html>
